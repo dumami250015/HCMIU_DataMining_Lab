@@ -1,0 +1,14 @@
+@relation students
+
+@attribute hours_study numeric
+@attribute attendance {high, medium, low}
+@attribute part_time_job {yes, no}
+@attribute result {pass, fail}
+
+@data
+10, high, no, pass
+2, low, yes, fail
+6, medium, no, pass
+1, low, yes, fail
+8, high, yes, pass
+4, medium, yes, fail
