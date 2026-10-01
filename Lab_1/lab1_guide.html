@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .step-card { transition: all 0.2s ease; }
+    .step-card:hover { transform: translateY(-1px); }
+    .checklist-item input:checked + span { text-decoration: line-through; opacity: 0.6; }
+    details summary { cursor: pointer; }
+    details summary::-webkit-details-marker { display: none; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-6">
+  <div class="max-w-4xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 shadow-sm">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 rounded-lg bg-[var(--primary)] flex items-center justify-center text-[var(--primary-foreground)] font-bold text-lg">1</div>
+        <div>
+          <h1 class="text-xl font-bold text-[var(--foreground)]">Lab 1: Introduction to Weka</h1>
+          <p class="text-[var(--muted-foreground)] text-sm">IT132 – Introduction to Data Mining</p>
+        </div>
+      </div>
+      <p class="text-[var(--muted-foreground)] text-sm mt-3">This guide walks you through every requirement in Lab 1. The lab has <strong class="text-[var(--foreground)]">5 main sections</strong> and you need to fill in the <strong class="text-[var(--foreground)]">Form (DOCX)</strong> with your answers. Follow each step below.</p>
+    </div>
+
+    <!-- SETUP -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm step-card">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="tag bg-blue-500/20 text-blue-400">Setup</span>
+        <h2 class="font-semibold text-[var(--foreground)]">Step 0: Install Weka</h2>
+      </div>
+      <div class="space-y-2 text-sm text-[var(--muted-foreground)]">
+        <p>Before starting the lab, install Weka on your computer:</p>
+        <ol class="list-decimal list-inside space-y-1 ml-2">
+          <li>Go to <code class="bg-[var(--content)] px-1 rounded text-xs">https://www.cs.waikato.ac.nz/ml/weka/</code></li>
+          <li>Download <strong class="text-[var(--foreground)]">Weka 3.9.6</strong> (latest stable version)</li>
+          <li>Install and open Weka</li>
+          <li>Click <strong class="text-[var(--foreground)]">"Explorer"</strong> on the main screen to enter the Explorer interface</li>
+        </ol>
+        <p class="mt-2 p-2 bg-[var(--accent)]/10 rounded-lg text-xs">💡 <strong>Tip:</strong> Weka comes with sample datasets in the <code class="bg-[var(--content)] px-1 rounded">data/</code> folder inside the installation directory. Copy this folder to your working directory for easy access.</p>
+      </div>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm step-card">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="tag bg-green-500/20 text-green-400">Section 1</span>
+        <h2 class="font-semibold text-[var(--foreground)]">Exploring the Explorer</h2>
+      </div>
+      <div class="space-y-3 text-sm text-[var(--muted-foreground)]">
+        <p>Get familiar with Weka's Explorer interface. Note the <strong class="text-[var(--foreground)]">6 tabs</strong>:</p>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-[var(--content)] rounded-lg p-3">
+            <strong class="text-[var(--foreground)]">Preprocess</strong>
+            <p class="text-xs mt-1">Load data, apply filters, view attribute stats</p>
+          </div>
+          <div class="bg-[var(--content)] rounded-lg p-3">
+            <strong class="text-[var(--foreground)]">Classify</strong>
+            <p class="text-xs mt-1">Build & evaluate classification models</p>
+          </div>
+          <div class="bg-[var(--content)] rounded-lg p-3">
+            <strong class="text-[var(--foreground)]">Cluster</strong>
+            <p class="text-xs mt-1">Group similar instances together</p>
+          </div>
+          <div class="bg-[var(--content)] rounded-lg p-3">
+            <strong class="text-[var(--foreground)]">Associate</strong>
+            <p class="text-xs mt-1">Find association rules in data</p>
+          </div>
+          <div class="bg-[var(--content)] rounded-lg p-3">
+            <strong class="text-[var(--foreground)]">Select attributes</strong>
+            <p class="text-xs mt-1">Identify the most relevant attributes</p>
+          </div>
+          <div class="bg-[var(--content)] rounded-lg p-3">
+            <strong class="text-[var(--foreground)]">Visualize</strong>
+            <p class="text-xs mt-1">Plot data in various visual formats</p>
+          </div>
+        </div>
+        <p class="p-2 bg-[var(--accent)]/10 rounded-lg text-xs">📝 <strong>What to do:</strong> Take notes on what you observe. No specific form answer needed here — this is exploration.</p>
+      </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm step-card">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="tag bg-yellow-500/20 text-yellow-400">Section 2</span>
+        <h2 class="font-semibold text-[var(--foreground)]">Exploring Datasets</h2>
+      </div>
+      <div class="space-y-3 text-sm text-[var(--muted-foreground)]">
+        <p>You need to examine <strong class="text-[var(--foreground)]">3 datasets</strong> and fill in tables in the form:</p>
+
+        <!-- Dataset 1 -->
+        <details class="bg-[var(--content)] rounded-lg p-3">
+          <summary class="font-semibold text-[var(--foreground)] flex items-center gap-2">
+            <span>▶</span> Dataset 1: vote.arff
+          </summary>
+          <div class="mt-3 space-y-2 pl-4 border-l-2 border-[var(--border)]">
+            <p><strong>How to do it:</strong></p>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Open Weka Explorer → Click <strong>"Open file..."</strong></li>
+              <li>Navigate to Weka's <code class="bg-[var(--card)] px-1 rounded text-xs">data/</code> folder → Select <code class="bg-[var(--card)] px-1 rounded text-xs">vote.arff</code></li>
+              <li>Look at the <strong>"Current relation"</strong> panel (top-left) for:
+                <ul class="list-disc list-inside ml-4">
+                  <li><strong>Relation name</strong> (e.g., "vote")</li>
+                  <li><strong># Instances</strong> (number of rows/records)</li>
+                  <li><strong># Attributes</strong> (number of columns/features)</li>
+                </ul>
+              </li>
+              <li>Click each attribute in the <strong>"Attributes"</strong> list on the left</li>
+              <li>For each attribute, note:
+                <ul class="list-disc list-inside ml-4">
+                  <li>Its <strong>name</strong></li>
+                  <li>Its <strong>possible values</strong> (shown in the histogram on the right)</li>
+                  <li>The <strong>count of instances</strong> for each value</li>
+                </ul>
+              </li>
+              <li>The last attribute is usually the <strong>Class</strong> — note its name and values</li>
+            </ol>
+            <p class="p-2 bg-yellow-500/10 rounded text-xs mt-2">📋 <strong>Fill in:</strong> Table 1 in the form — Relation name, #Instances, #Attributes, each attribute's name/values/count, and the Class attribute.</p>
+          </div>
+        </details>
+
+        <!-- Dataset 2 -->
+        <details class="bg-[var(--content)] rounded-lg p-3">
+          <summary class="font-semibold text-[var(--foreground)] flex items-center gap-2">
+            <span>▶</span> Dataset 2: diabetes.arff
+          </summary>
+          <div class="mt-3 space-y-2 pl-4 border-l-2 border-[var(--border)]">
+            <p>Same process as vote.arff. Open <code class="bg-[var(--card)] px-1 rounded text-xs">diabetes.arff</code> and fill in Table 2.</p>
+            <p class="p-2 bg-yellow-500/10 rounded text-xs">📋 <strong>Fill in:</strong> Table 2 — Record the relation, instances, attributes, values, and class info.</p>
+          </div>
+        </details>
+
+        <!-- Dataset 3 -->
+        <details class="bg-[var(--content)] rounded-lg p-3">
+          <summary class="font-semibold text-[var(--foreground)] flex items-center gap-2">
+            <span>▶</span> Dataset 3: credit-g.arff
+          </summary>
+          <div class="mt-3 space-y-2 pl-4 border-l-2 border-[var(--border)]">
+            <p>Same process. Open <code class="bg-[var(--card)] px-1 rounded text-xs">credit-g.arff</code> and fill in Table 3.</p>
+            <p class="p-2 bg-yellow-500/10 rounded text-xs">📋 <strong>Fill in:</strong> Table 3 — Record the relation, instances, attributes, values, and class info.</p>
+          </div>
+        </details>
+
+        <!-- Custom ARFF -->
+        <details class="bg-[var(--content)] rounded-lg p-3">
+          <summary class="font-semibold text-[var(--foreground)] flex items-center gap-2">
+            <span>▶</span> Bonus: Create your own ARFF file
+          </summary>
+          <div class="mt-3 space-y-2 pl-4 border-l-2 border-[var(--border)]">
+            <p><strong>ARFF format structure:</strong></p>
+            <pre class="bg-[var(--card)] p-3 rounded text-xs overflow-x-auto"><code>@relation mydata
+
+@attribute name {value1, value2, value3}
+@attribute age numeric
+@attribute class {yes, no}
+
+@data
+value1,25,yes
+value2,30,no
+value3,22,yes</code></pre>
+            <ol class="list-decimal list-inside space-y-1 mt-2">
+              <li>Create a <code class="bg-[var(--card)] px-1 rounded text-xs">.arff</code> file using a text editor (Notepad)</li>
+              <li>Define <code>@relation</code>, <code>@attribute</code>, and <code>@data</code> sections</li>
+              <li>Load it in Weka to verify it works</li>
+              <li>Fill in Table 4 with your custom dataset info</li>
+            </ol>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm step-card">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="tag bg-purple-500/20 text-purple-400">Section 3</span>
+        <h2 class="font-semibold text-[var(--foreground)]">Building a Classifier</h2>
+      </div>
+      <div class="space-y-3 text-sm text-[var(--muted-foreground)]">
+        <p>You must compare <strong class="text-[var(--foreground)]">J48</strong> vs <strong class="text-[var(--foreground)]">RandomTree</strong> on the <code class="bg-[var(--content)] px-1 rounded text-xs">credit-g.arff</code> dataset.</p>
+
+        <div class="bg-[var(--content)] rounded-lg p-4 space-y-3">
+          <p class="font-semibold text-[var(--foreground)]">Step-by-step:</p>
+          <ol class="list-decimal list-inside space-y-2">
+            <li>Open <code class="bg-[var(--card)] px-1 rounded text-xs">credit-g.arff</code> in the Preprocess tab</li>
+            <li>Go to the <strong>"Classify"</strong> tab</li>
+            <li>Click <strong>"Choose"</strong> → navigate to <code class="text-xs">trees → J48</code></li>
+            <li>Click on the algorithm name to open its settings:
+              <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                <li>Set <strong>unpruned = False</strong> (pruned tree) → Click Start</li>
+                <li>Record: # Leaves, Correctly Classified %, Confusion Matrix</li>
+                <li>Then set <strong>unpruned = True</strong> → Click Start again</li>
+                <li>Record the same metrics</li>
+              </ul>
+            </li>
+            <li>Now click <strong>"Choose"</strong> → <code class="text-xs">trees → RandomTree</code></li>
+            <li>Run it and record the same metrics</li>
+          </ol>
+        </div>
+
+        <p class="p-2 bg-purple-500/10 rounded-lg text-xs">📋 <strong>Fill in:</strong> Table 5 — Algorithm name, Pruned/unpruned, minNumObj, No. of Leaves, Correctly Classified Instances. Also analyze the <strong>confusion matrix</strong> each time.</p>
+
+        <div class="bg-[var(--content)] rounded-lg p-3 mt-2">
+          <p class="font-semibold text-[var(--foreground)] text-xs mb-1">Understanding the Confusion Matrix:</p>
+          <p class="text-xs">The confusion matrix shows actual vs predicted classes. Diagonal = correct predictions. Off-diagonal = errors. Look at: True Positives, False Positives, True Negatives, False Negatives.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm step-card">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="tag bg-orange-500/20 text-orange-400">Section 4</span>
+        <h2 class="font-semibold text-[var(--foreground)]">Using a Filter</h2>
+      </div>
+      <div class="space-y-3 text-sm text-[var(--muted-foreground)]">
+        <p>Learn to use filters to modify data before classification. Three sub-tasks:</p>
+
+        <details class="bg-[var(--content)] rounded-lg p-3">
+          <summary class="font-semibold text-[var(--foreground)] flex items-center gap-2">
+            <span>▶</span> 4a: Remove an attribute
+          </summary>
+          <div class="mt-3 space-y-2 pl-4 border-l-2 border-[var(--border)]">
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Open <code class="bg-[var(--card)] px-1 rounded text-xs">credit-g.arff</code> in Preprocess</li>
+              <li>Click <strong>"Choose"</strong> under Filter → <code class="text-xs">filters → unsupervised → attribute → Remove</code></li>
+              <li>Click on the filter name to configure it</li>
+              <li>Set <strong>attributeIndices</strong> to the index of the attribute to remove (e.g., <code>"1"</code> to remove the first attribute)</li>
+              <li>Click <strong>"Apply"</strong></li>
+            </ol>
+            <p class="p-2 bg-orange-500/10 rounded text-xs mt-2">📝 <strong>Answer:</strong> "What are attributeIndices?" → They are the <strong>column numbers</strong> (1-indexed) of the attributes you want to remove. You can specify ranges like "1-3" or individual indices like "1,4,7".</p>
+          </div>
+        </details>
+
+        <details class="bg-[var(--content)] rounded-lg p-3">
+          <summary class="font-semibold text-[var(--foreground)] flex items-center gap-2">
+            <span>▶</span> 4b: Remove instances where housing is "own"
+          </summary>
+          <div class="mt-3 space-y-2 pl-4 border-l-2 border-[var(--border)]">
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Open <code class="bg-[var(--card)] px-1 rounded text-xs">credit-g.arff</code> in Preprocess</li>
+              <li>Click <strong>"Choose"</strong> → <code class="text-xs">filters → unsupervised → instance → RemoveWithValues</code></li>
+              <li>Set <strong>attributeIndex</strong> to the index of the "housing" attribute</li>
+              <li>Set <strong>nominalIndices</strong> to the index of "own" within that attribute's values</li>
+              <li>Click <strong>"Apply"</strong></li>
+            </ol>
+            <p class="p-2 bg-orange-500/10 rounded text-xs mt-2">📝 <strong>Answer:</strong> "What are nominalIndices?" → They are the <strong>indices of the specific values</strong> within a nominal attribute that you want to match for removal. E.g., if "housing" has values {rent, own, free}, and "own" is the 2nd value, then nominalIndices = "2".</p>
+          </div>
+        </details>
+
+        <details class="bg-[var(--content)] rounded-lg p-3">
+          <summary class="font-semibold text-[var(--foreground)] flex items-center gap-2">
+            <span>▶</span> 4c: Fewer attributes, better classification?
+          </summary>
+          <div class="mt-3 space-y-2 pl-4 border-l-2 border-[var(--border)]">
+            <p>Run J48 on <code class="bg-[var(--card)] px-1 rounded text-xs">credit-g.arff</code> in three scenarios:</p>
+            <ol class="list-decimal list-inside space-y-1">
+              <li><strong>Original</strong> — all attributes, run J48, record leaf size & accuracy</li>
+              <li><strong>Remove "checking_status"</strong> — remove attribute using the Remove filter, run J48 again</li>
+              <li><strong>Keep only "duration" and "credit_amount"</strong> — remove all other attributes (except class!), run J48</li>
+            </ol>
+            <p class="p-2 bg-orange-500/10 rounded text-xs mt-2">📋 <strong>Fill in:</strong> Table 6 — Filter applied, Leaf size, Correctly Classified %, and your Remark (does fewer attributes improve accuracy?).</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm step-card">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="tag bg-pink-500/20 text-pink-400">Section 5</span>
+        <h2 class="font-semibold text-[var(--foreground)]">Visualizing Your Data</h2>
+      </div>
+      <div class="space-y-3 text-sm text-[var(--muted-foreground)]">
+        <p>Visualize classifier errors using the <code class="bg-[var(--content)] px-1 rounded text-xs">iris.2D.arff</code> dataset.</p>
+        <div class="bg-[var(--content)] rounded-lg p-4 space-y-2">
+          <ol class="list-decimal list-inside space-y-2">
+            <li>Open <code class="bg-[var(--card)] px-1 rounded text-xs">iris.2D.arff</code> in Preprocess</li>
+            <li>Go to <strong>Classify</strong> tab → Choose <code class="text-xs">trees → J48</code> → Click <strong>Start</strong></li>
+            <li>In the <strong>"Result list"</strong> panel (bottom-left), right-click on the result</li>
+            <li>Select <strong>"Visualize classifier errors"</strong></li>
+            <li>A scatter plot appears showing correctly and incorrectly classified instances</li>
+            <li>Incorrectly classified instances are shown as <strong>squares</strong> (misclassified), while correct ones are <strong>crosses/dots</strong></li>
+          </ol>
+        </div>
+        <p class="p-2 bg-pink-500/10 rounded-lg text-xs">📋 <strong>Fill in:</strong> Table 7 — List each wrongly predicted instance with its <strong>Predicted class</strong> and <strong>Actual class</strong>. Count total wrong predictions.</p>
+
+        <div class="bg-[var(--content)] rounded-lg p-3 mt-1">
+          <p class="text-xs"><strong>How to identify wrong instances:</strong> Look at the Weka output text. The classification details show each instance. You can also hover over points in the visualization to see details. Alternatively, check the confusion matrix to count errors.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY CHECKLIST -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+      <h2 class="font-semibold text-[var(--foreground)] mb-3">✅ Submission Checklist</h2>
+      <div class="space-y-2 text-sm">
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Table 1: vote.arff dataset info (attributes, values, counts, class)</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Table 2: diabetes.arff dataset info</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Table 3: credit-g.arff dataset info</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Table 4: Your custom ARFF file dataset info</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Table 5: J48 vs RandomTree classifier results on credit-g.arff</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Confusion matrix analysis for each classifier run</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Answer: What are attributeIndices?</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Answer: What are nominalIndices?</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Table 6: Filter comparison (Original, Remove checking_status, Keep only duration+credit_amount)</span>
+        </label>
+        <label class="checklist-item flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+          <input type="checkbox" class="rounded">
+          <span>Table 7: Wrongly predicted instances for iris.2D.arff with J48</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Important Notes -->
+    <div class="bg-[var(--card)] border border-yellow-500/30 rounded-xl p-5 shadow-sm">
+      <h2 class="font-semibold text-yellow-400 mb-2">⚠️ Key Differences: Instructions PDF vs. Form (What to Follow)</h2>
+      <div class="space-y-2 text-sm text-[var(--muted-foreground)]">
+        <p>The <strong>Instructions PDF</strong> and the <strong>Form</strong> have some differences. The <strong>Form (2025 version)</strong> is what you actually need to submit, so follow it as the authoritative source:</p>
+        <table class="w-full text-xs mt-2 border-collapse">
+          <thead>
+            <tr class="border-b border-[var(--border)]">
+              <th class="text-left py-2 pr-2 text-[var(--foreground)]">Task</th>
+              <th class="text-left py-2 pr-2 text-[var(--foreground)]">Instructions PDF</th>
+              <th class="text-left py-2 text-[var(--foreground)]">Form 2025 (Use This!)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[var(--border)]">
+            <tr>
+              <td class="py-2 pr-2">Explore datasets</td>
+              <td class="py-2 pr-2">weather.nominal.arff, weather.numeric.arff, glass.arff</td>
+              <td class="py-2 font-semibold text-[var(--foreground)]">vote.arff, diabetes.arff, credit-g.arff</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-2">Build classifier</td>
+              <td class="py-2 pr-2">J48 on glass.arff (pruned vs unpruned)</td>
+              <td class="py-2 font-semibold text-[var(--foreground)]">J48 vs RandomTree on credit-g.arff</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-2">Filter: Remove attr</td>
+              <td class="py-2 pr-2">Remove Fe from glass.arff</td>
+              <td class="py-2 font-semibold text-[var(--foreground)]">Remove checking_status from credit-g.arff</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-2">Filter: Remove instances</td>
+              <td class="py-2 pr-2">Remove humidity=high</td>
+              <td class="py-2 font-semibold text-[var(--foreground)]">Remove housing=own</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-2">Filter: Keep only</td>
+              <td class="py-2 pr-2">Keep RI and MG</td>
+              <td class="py-2 font-semibold text-[var(--foreground)]">Keep duration and credit_amount</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-2">Visualize</td>
+              <td class="py-2 pr-2">iris.arff</td>
+              <td class="py-2 font-semibold text-[var(--foreground)]">iris.2D.arff</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
