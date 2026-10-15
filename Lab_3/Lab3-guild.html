@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] .chevron { transform: rotate(90deg); }
+    .chevron { transition: transform 0.2s; display: inline-block; }
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .step-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    code { background: var(--content); padding: 1px 6px; border-radius: 4px; font-size: 0.8em; font-family: monospace; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th, td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+    th { background: var(--content); font-weight: 600; }
+    .math { font-family: 'Times New Roman', serif; font-style: italic; padding: 8px 12px; background: var(--content); border-radius: 6px; text-align: center; margin: 8px 0; }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-6">
+<div class="max-w-4xl mx-auto space-y-5">
+
+  <!-- Header -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 shadow-sm">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-10 h-10 rounded-lg bg-[var(--primary)] flex items-center justify-center text-[var(--primary-foreground)] font-bold text-lg">3</div>
+      <div>
+        <h1 class="text-xl font-bold text-[var(--foreground)]">Lab 3: Simple Classifiers</h1>
+        <p class="text-[var(--muted-foreground)] text-sm">IT132 – Introduction to Data Mining</p>
+      </div>
+    </div>
+    <p class="text-[var(--muted-foreground)] text-sm mt-2">This lab covers <strong class="text-[var(--foreground)]">5 algorithms</strong>: OneR, ZeroR, Naïve Bayes, Decision Trees (J48), and K-Nearest Neighbors (IBk). All experiments are done in <strong class="text-[var(--foreground)]">Weka Explorer</strong>.</p>
+
+    <div class="mt-4 grid grid-cols-5 gap-2 text-xs text-center">
+      <div class="bg-green-500/15 border border-green-500/30 rounded-lg p-2">
+        <div class="font-bold text-green-400">Part 1</div>
+        <div class="text-[var(--muted-foreground)] mt-1">OneR & ZeroR</div>
+      </div>
+      <div class="bg-yellow-500/15 border border-yellow-500/30 rounded-lg p-2">
+        <div class="font-bold text-yellow-400">Part 2</div>
+        <div class="text-[var(--muted-foreground)] mt-1">Overfitting</div>
+      </div>
+      <div class="bg-blue-500/15 border border-blue-500/30 rounded-lg p-2">
+        <div class="font-bold text-blue-400">Part 3</div>
+        <div class="text-[var(--muted-foreground)] mt-1">Naïve Bayes</div>
+      </div>
+      <div class="bg-purple-500/15 border border-purple-500/30 rounded-lg p-2">
+        <div class="font-bold text-purple-400">Part 4</div>
+        <div class="text-[var(--muted-foreground)] mt-1">Decision Trees</div>
+      </div>
+      <div class="bg-pink-500/15 border border-pink-500/30 rounded-lg p-2">
+        <div class="font-bold text-pink-400">Part 5</div>
+        <div class="text-[var(--muted-foreground)] mt-1">KNN (IBk)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PART 1: OneR & ZeroR ===== -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="tag bg-green-500/20 text-green-400">Part 1</span>
+      <h2 class="font-semibold text-[var(--foreground)]">Simplicity First — OneR vs ZeroR</h2>
+    </div>
+
+    <div class="space-y-4 text-sm text-[var(--muted-foreground)]">
+
+      <!-- Concept box -->
+      <div class="bg-[var(--content)] rounded-lg p-4 space-y-2">
+        <p class="font-semibold text-[var(--foreground)]">🧠 What are these algorithms?</p>
+        <div class="grid grid-cols-2 gap-3 mt-2">
+          <div class="bg-[var(--card)] rounded-lg p-3 border border-[var(--border)]">
+            <p class="font-semibold text-[var(--foreground)] text-xs mb-1">ZeroR (Zero Rules)</p>
+            <p class="text-xs">The simplest baseline — it always predicts the <strong>most common class</strong>. No actual learning happens. Use it as a baseline to compare other classifiers.</p>
+            <p class="text-xs mt-1 text-green-400">Example: If 70% of data is "class A", ZeroR always predicts "A" → 70% accuracy.</p>
+          </div>
+          <div class="bg-[var(--card)] rounded-lg p-3 border border-[var(--border)]">
+            <p class="font-semibold text-[var(--foreground)] text-xs mb-1">OneR (One Rule)</p>
+            <p class="text-xs">Uses <strong>one attribute</strong> to classify. Tests every attribute, picks the one that gives the best accuracy, and makes a simple rule table from it.</p>
+            <p class="text-xs mt-1 text-green-400">Example: "If outlook = Sunny → No play; If outlook = Overcast → Play..."</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <details open class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          Step 1a: Run OneR on weather.nominal.arff and describe the model
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-2">
+          <ol class="list-decimal list-inside space-y-2">
+            <li>Open Weka Explorer → <strong>Preprocess</strong> → Open file → choose <code>weather.nominal.arff</code></li>
+            <li>Go to <strong>Classify</strong> tab → Click <strong>"Choose"</strong> → <code>rules → OneR</code></li>
+            <li>Test options: leave as <strong>"Use training set"</strong> for now → Click <strong>Start</strong></li>
+            <li>In the output panel, look for the <strong>"Classifier model"</strong> section — it shows you which attribute was chosen and what the rules are</li>
+          </ol>
+          <div class="bg-[var(--card)] p-3 rounded-lg border border-[var(--border)] mt-2">
+            <p class="text-xs font-semibold text-[var(--foreground)] mb-1">📋 What to write in the form:</p>
+            <ul class="text-xs space-y-1 list-disc list-inside">
+              <li><strong>First blank (dash "–"):</strong> Write the classifier model output — which attribute OneR chose and the rules it generated. E.g., <em>"outlook: Sunny → no, Overcast → yes, Rainy → yes; (9/14 correct)"</em></li>
+              <li><strong>Remarks:</strong> Describe what you notice — e.g., "OneR picked 'outlook' as the most predictive attribute. The model is simple but easy to understand."</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          Step 1b: Fill OneR vs ZeroR Comparison Table (multiple datasets)
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-3">
+          <p>Run <strong>OneR</strong> and <strong>ZeroR</strong> on several datasets. The form table has ~10 rows — use these recommended datasets:</p>
+          <table>
+            <thead><tr><th>Dataset</th><th>How to find it</th></tr></thead>
+            <tbody>
+              <tr><td><code>weather.nominal.arff</code></td><td>Weka's data/ folder</td></tr>
+              <tr><td><code>weather.numeric.arff</code></td><td>Weka's data/ folder</td></tr>
+              <tr><td><code>diabetes.arff</code></td><td>Weka's data/ folder</td></tr>
+              <tr><td><code>glass.arff</code></td><td>Weka's data/ folder</td></tr>
+              <tr><td><code>iris.arff</code></td><td>Weka's data/ folder</td></tr>
+              <tr><td><code>credit-g.arff</code></td><td>Weka's data/ folder</td></tr>
+              <tr><td><code>breast-cancer.arff</code></td><td>Weka's data/ folder</td></tr>
+            </tbody>
+          </table>
+          <div class="bg-[var(--card)] p-3 rounded-lg border border-[var(--border)] mt-2">
+            <p class="text-xs font-semibold text-[var(--foreground)] mb-1">For each dataset:</p>
+            <ol class="text-xs list-decimal list-inside space-y-1">
+              <li>Open the dataset in Preprocess</li>
+              <li>Classify tab → Choose <code>rules → ZeroR</code> → Use training set → Start → Record "Correctly Classified Instances" %</li>
+              <li>Choose <code>rules → OneR</code> → Same settings → Start → Record the % accuracy</li>
+              <li>Enter both values in the table row for that dataset</li>
+            </ol>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== PART 2: Overfitting ===== -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="tag bg-yellow-500/20 text-yellow-400">Part 2</span>
+      <h2 class="font-semibold text-[var(--foreground)]">Overfitting</h2>
+    </div>
+    <div class="space-y-4 text-sm text-[var(--muted-foreground)]">
+
+      <div class="bg-[var(--content)] rounded-lg p-4">
+        <p class="font-semibold text-[var(--foreground)] mb-1">🧠 Key Concept: Overfitting</p>
+        <p class="text-xs">Overfitting happens when a model learns the <strong>noise/errors</strong> in training data instead of the real underlying pattern → it performs well on training data but <strong>poorly on new data</strong>.</p>
+        <p class="text-xs mt-2"><strong>Solutions:</strong> Cross-validation, pruning, simpler models.</p>
+      </div>
+
+      <details open class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          Fill the Overfitting Table (4 experiments)
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-3">
+          <p class="font-semibold text-[var(--foreground)] text-xs">⚠️ IMPORTANT: Use Cross-Validation (10-fold) for all runs in this section!</p>
+          <p class="text-xs">In the Classify tab, under "Test options" select <strong>"Cross-validation"</strong> → Folds: <strong>10</strong> → then click Start.</p>
+
+          <div class="space-y-3 mt-2">
+
+            <div class="bg-[var(--card)] rounded-lg p-3 border border-[var(--border)]">
+              <p class="font-semibold text-[var(--foreground)] text-xs">Row 1: weather.numeric — OneR and ZeroR</p>
+              <ol class="text-xs list-decimal list-inside mt-2 space-y-1">
+                <li>Open <code>weather.numeric.arff</code></li>
+                <li>Run <strong>ZeroR</strong> with 10-fold CV → note model + accuracy</li>
+                <li>Run <strong>OneR</strong> with 10-fold CV → note model + accuracy</li>
+                <li>Record: "Classifier model: [what attribute/rule] Accuracy: X%"</li>
+              </ol>
+            </div>
+
+            <div class="bg-[var(--card)] rounded-lg p-3 border border-[var(--border)]">
+              <p class="font-semibold text-[var(--foreground)] text-xs">Row 2: weather.numeric WITHOUT "outlook" attribute</p>
+              <ol class="text-xs list-decimal list-inside mt-2 space-y-1">
+                <li>Open <code>weather.numeric.arff</code> in Preprocess</li>
+                <li>In the attributes list, <strong>uncheck "outlook"</strong> → Click <strong>"Remove"</strong> (or use a Remove filter)</li>
+                <li>Run <strong>OneR</strong> and <strong>ZeroR</strong> with 10-fold CV again</li>
+                <li>Notice how the accuracy changes when the best attribute is removed → this shows overfitting sensitivity</li>
+              </ol>
+            </div>
+
+            <div class="bg-[var(--card)] rounded-lg p-3 border border-[var(--border)]">
+              <p class="font-semibold text-[var(--foreground)] text-xs">Row 3: diabetes — OneR and ZeroR</p>
+              <ol class="text-xs list-decimal list-inside mt-2 space-y-1">
+                <li>Open <code>diabetes.arff</code></li>
+                <li>Run <strong>ZeroR</strong> with 10-fold CV → record</li>
+                <li>Run <strong>OneR</strong> (default minBucketSize) with 10-fold CV → record</li>
+              </ol>
+            </div>
+
+            <div class="bg-[var(--card)] rounded-lg p-3 border border-[var(--border)]">
+              <p class="font-semibold text-[var(--foreground)] text-xs">Row 4: diabetes WITH minBucketSize = 1</p>
+              <ol class="text-xs list-decimal list-inside mt-2 space-y-1">
+                <li>Open <code>diabetes.arff</code></li>
+                <li>Run <strong>OneR</strong> → but first click on the algorithm name to open its options</li>
+                <li>Change <code>minBucketSize</code> from default (6) to <strong>1</strong></li>
+                <li>Run with 10-fold CV → record model and accuracy</li>
+                <li>Compare accuracy with Row 3 — minBucketSize=1 may overfit more!</li>
+              </ol>
+              <div class="mt-2 p-2 bg-yellow-500/10 rounded text-xs">
+                <strong>minBucketSize answer:</strong> It sets the <strong>minimum number of training instances</strong> that a bucket (value interval) must contain. Smaller values = more specific rules = risk of overfitting. Larger values = broader rules = less overfitting.
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-[var(--card)] p-3 rounded-lg border border-[var(--border)] mt-3">
+            <p class="text-xs font-semibold text-[var(--foreground)] mb-1">📋 Remark to write:</p>
+            <p class="text-xs">When minBucketSize is very small (=1), OneR creates very specific rules that fit the training data too closely → the 10-fold CV accuracy may be lower than with default settings, demonstrating overfitting.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== PART 3: Naïve Bayes ===== -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="tag bg-blue-500/20 text-blue-400">Part 3</span>
+      <h2 class="font-semibold text-[var(--foreground)]">Using Probabilities — Naïve Bayes</h2>
+    </div>
+    <div class="space-y-4 text-sm text-[var(--muted-foreground)]">
+
+      <div class="bg-[var(--content)] rounded-lg p-4">
+        <p class="font-semibold text-[var(--foreground)] mb-2">🧠 Key Concept: Naïve Bayes</p>
+        <p class="text-xs">Naïve Bayes uses <strong>probability</strong> to classify. For each class, it calculates the probability of the instance belonging to that class given each attribute value, then picks the class with the highest probability.</p>
+        <p class="text-xs mt-2"><strong>Key assumption:</strong> All attributes are <em>independent</em> of each other (naive assumption). This is usually not true in practice, but it still works well!</p>
+      </div>
+
+      <details open class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          Run NaiveBayes on weather.nominal.arff
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-2">
+          <ol class="list-decimal list-inside space-y-2">
+            <li>Open <code>weather.nominal.arff</code></li>
+            <li>Classify tab → Choose → <code>bayes → NaiveBayes</code></li>
+            <li>Test options: <strong>"Use training set"</strong> → Click Start</li>
+            <li>In the output, look at the <strong>"Classifier model"</strong> block — it shows a probability table for each attribute value given each class</li>
+          </ol>
+          <div class="bg-[var(--card)] p-3 rounded-lg border border-[var(--border)] mt-2">
+            <p class="text-xs font-semibold text-[var(--foreground)] mb-1">📋 What to fill in the form table:</p>
+            <ul class="text-xs space-y-1 list-disc list-inside">
+              <li><strong>Classifier model column:</strong> Copy the probability table from the output (the counts/probabilities for each attribute value under each class)</li>
+              <li><strong>Performance column:</strong> Write the "Correctly Classified Instances" percentage shown in the output, e.g., "100% (14/14 instances)"</li>
+            </ul>
+            <p class="text-xs mt-2 text-yellow-400">⚠️ Note: Training set evaluation gives optimistically high accuracy (often 100% on weather). Cross-validation gives more realistic results.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== PART 4: Decision Trees ===== -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="tag bg-purple-500/20 text-purple-400">Part 4</span>
+      <h2 class="font-semibold text-[var(--foreground)]">Decision Trees — Entropy, Info Gain & Pruning</h2>
+    </div>
+    <div class="space-y-4 text-sm text-[var(--muted-foreground)]">
+
+      <details open class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          4a: Manual calculation — Build the weather.nominal decision tree
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-3">
+          <p class="text-xs">The form asks you to <strong>manually calculate</strong> Entropy and Information Gain for the weather.nominal dataset, then show which attribute gets selected at each step.</p>
+
+          <div class="bg-[var(--card)] p-3 rounded border border-[var(--border)]">
+            <p class="font-semibold text-[var(--foreground)] text-xs mb-2">Weather.nominal dataset (14 instances):</p>
+            <p class="text-xs">Class distribution: <strong>9 "yes" (play)</strong>, <strong>5 "no" (don't play)</strong></p>
+            <div class="math text-sm">
+              Entropy(S) = -(9/14)log₂(9/14) - (5/14)log₂(5/14) ≈ <strong>0.940</strong>
+            </div>
+          </div>
+
+          <div class="bg-[var(--card)] p-3 rounded border border-[var(--border)]">
+            <p class="font-semibold text-[var(--foreground)] text-xs mb-2">Calculate Info Gain for each attribute:</p>
+            <div class="space-y-2 text-xs">
+              <div class="p-2 bg-[var(--content)] rounded">
+                <strong>Outlook</strong> (Sunny=5, Overcast=4, Rainy=5):
+                <br>Sunny: 2yes, 3no → Entropy = 0.971; Overcast: 4yes, 0no → Entropy = 0; Rainy: 3yes, 2no → Entropy = 0.971
+                <br>Gain(Outlook) = 0.940 - (5/14×0.971 + 4/14×0 + 5/14×0.971) ≈ <strong>0.246</strong>
+              </div>
+              <div class="p-2 bg-[var(--content)] rounded">
+                <strong>Temperature</strong>: Gain ≈ <strong>0.029</strong>
+              </div>
+              <div class="p-2 bg-[var(--content)] rounded">
+                <strong>Humidity</strong>: Gain ≈ <strong>0.151</strong>
+              </div>
+              <div class="p-2 bg-[var(--content)] rounded">
+                <strong>Windy</strong>: Gain ≈ <strong>0.048</strong>
+              </div>
+            </div>
+            <p class="text-xs mt-2">→ <strong>Outlook has the highest gain (0.246) → selected as root!</strong></p>
+          </div>
+
+          <div class="bg-[var(--card)] p-3 rounded border border-[var(--border)]">
+            <p class="font-semibold text-[var(--foreground)] text-xs mb-1">📋 How to fill the form table:</p>
+            <p class="text-xs">Each row = one level of the decision tree. Write the entropy/gain calculations in the first column, and which attribute was selected in the second column. Continue recursively for each branch until pure nodes are reached.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          4b: Run J48 on weather.nominal in Weka (verify your manual tree)
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-2">
+          <ol class="list-decimal list-inside space-y-1 text-xs">
+            <li>Open <code>weather.nominal.arff</code></li>
+            <li>Classify → Choose → <code>trees → J48</code> → Use training set → Start</li>
+            <li>The output shows the decision tree structure — compare it with your manual calculation</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          4c: Pruning — Run J48 (pruned vs unpruned) on diabetes and breast-cancer
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-3">
+          <div class="bg-[var(--card)] p-3 rounded border border-[var(--border)]">
+            <p class="font-semibold text-[var(--foreground)] text-xs mb-2">J48 Parameters to know:</p>
+            <ul class="text-xs space-y-1 list-disc list-inside">
+              <li><strong>minNumObj</strong>: Minimum number of instances a leaf must have. Higher = simpler tree (less overfitting).</li>
+              <li><strong>confidenceFactor</strong>: Controls pruning aggressiveness. Lower value (e.g., 0.1) = more pruning = simpler tree. Default = 0.25.</li>
+            </ul>
+          </div>
+
+          <div class="space-y-2">
+            <p class="text-xs font-semibold text-[var(--foreground)]">For each dataset (diabetes.arff, breast-cancer.arff):</p>
+            <ol class="list-decimal list-inside space-y-2 text-xs">
+              <li>Open the dataset</li>
+              <li>Classify → J48 → Click on "J48" name to open options → check: <strong>unpruned = False</strong> (this is pruned/default) → 10-fold CV → Start → record accuracy</li>
+              <li>Same dataset → J48 options → set <strong>unpruned = True</strong> → 10-fold CV → Start → record accuracy</li>
+              <li>Fill in the table row for that dataset</li>
+            </ol>
+          </div>
+
+          <div class="bg-[var(--card)] p-3 rounded border border-[var(--border)]">
+            <p class="text-xs font-semibold text-[var(--foreground)] mb-1">📋 What to write in the table cells:</p>
+            <p class="text-xs">Write the <strong>accuracy %</strong> and optionally the <strong>number of leaves/tree size</strong>. E.g., "Accuracy: 74.2%, Leaves: 18, Size: 35"</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== PART 5: KNN ===== -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="tag bg-pink-500/20 text-pink-400">Part 5</span>
+      <h2 class="font-semibold text-[var(--foreground)]">Nearest Neighbor — IBk (K-NN)</h2>
+    </div>
+    <div class="space-y-4 text-sm text-[var(--muted-foreground)]">
+
+      <div class="bg-[var(--content)] rounded-lg p-4">
+        <p class="font-semibold text-[var(--foreground)] mb-2">🧠 What is K-Nearest Neighbors?</p>
+        <p class="text-xs">KNN classifies a new instance by finding the <strong>K closest training instances</strong> (neighbors) and using a majority vote. No model is built — classification happens at prediction time (lazy learning).</p>
+        <ul class="text-xs mt-2 space-y-1 list-disc list-inside">
+          <li><strong>Small K (e.g., 1):</strong> Very sensitive to noise, can overfit</li>
+          <li><strong>Large K (e.g., 20):</strong> Smoother decision boundary, may underfit</li>
+        </ul>
+        <p class="text-xs mt-2 font-semibold text-[var(--foreground)]">Write this as your answer to "What is K-NN?"</p>
+      </div>
+
+      <details open class="bg-[var(--content)] rounded-lg p-4">
+        <summary class="flex items-center gap-2 font-semibold text-[var(--foreground)]">
+          <span class="chevron text-[var(--muted-foreground)]">▶</span>
+          Run IBk with k=1, 5, 20 on glass.arff
+        </summary>
+        <div class="mt-3 pl-4 border-l-2 border-[var(--border)] space-y-2">
+          <ol class="list-decimal list-inside space-y-2 text-xs">
+            <li>Open <code>glass.arff</code></li>
+            <li>Classify → Choose → <code>lazy → IBk</code></li>
+            <li>Click on "IBk" name → set <strong>KNN = 1</strong> → 10-fold CV → Start → record accuracy</li>
+            <li>Again, set <strong>KNN = 5</strong> → Start → record accuracy</li>
+            <li>Again, set <strong>KNN = 20</strong> → Start → record accuracy</li>
+            <li>Fill in the table with all 3 accuracies</li>
+          </ol>
+          <div class="bg-[var(--card)] p-3 rounded border border-[var(--border)] mt-2">
+            <p class="text-xs font-semibold text-[var(--foreground)] mb-1">Expected result pattern:</p>
+            <p class="text-xs">k=1 usually has high accuracy on training set but can vary with CV. k=5 often has better generalization. k=20 may be too broad for glass.arff. Compare and analyze!</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== CHECKLIST ===== -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+    <h2 class="font-semibold text-[var(--foreground)] mb-3">✅ Submission Checklist</h2>
+    <div class="space-y-2 text-sm">
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 1: OneR model description for weather.nominal + Remarks</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 1: OneR vs ZeroR accuracy table (~10 datasets)</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 2: Overfitting table (4 rows: weather.numeric, w/o outlook, diabetes, diabetes minBucketSize=1)</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 2: Answer "What is minBucketSize?" + Remark about overfitting</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 3: NaiveBayes classifier model + performance on weather.nominal</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 4: Manual entropy & info gain calculation table + selected attribute at each split</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 4: J48 pruned vs unpruned on diabetes.arff and breast-cancer.arff</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 4: Answer "What are minNumObj and confidenceFactor?"</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 5: Answer "What is K-NN?"</span>
+      </label>
+      <label class="flex items-center gap-2 text-[var(--muted-foreground)] cursor-pointer">
+        <input type="checkbox" class="rounded">
+        <span>Part 5: IBk accuracy table for glass.arff with k=1, 5, 20</span>
+      </label>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
